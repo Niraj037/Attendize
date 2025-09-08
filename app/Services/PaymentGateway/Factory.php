@@ -3,6 +3,7 @@
 namespace Services\PaymentGateway;
 
 use Omnipay\Omnipay;
+use Omnipay\Common\AbstractGateway;
 
 /**
  * The intention of this factory is to create a service that is a wrapper around the relative Omnipay implementation
@@ -16,12 +17,12 @@ class Factory
 {
 
     /**
-     * @param $name
-     * @param $paymentGatewayConfig
+     * @param string $name
+     * @param array $paymentGatewayConfig
      * @return Dummy|Stripe|StripeSCA|Razorpay
      * @throws \Exception
      */
-    public function create($name, $paymentGatewayConfig)
+    public function create(string $name, array $paymentGatewayConfig)
     {
 
         switch ($name) {
@@ -66,7 +67,7 @@ class Factory
 
             default :
                 {
-                    throw New \Exception('Invalid gateway specified');
+                    throw new \Exception('Invalid gateway specified');
                 }
         }
     }

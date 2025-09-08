@@ -2,25 +2,30 @@
 
 namespace Services\PaymentGateway;
 
+use Omnipay\Common\AbstractGateway;
+use Omnipay\Common\Message\ResponseInterface;
+
 class Razorpay
 {
+    public const GATEWAY_NAME = 'Razorpay_Checkout';
 
-    CONST GATEWAY_NAME = 'Razorpay_Checkout';
+    private array $transaction_data = [];
 
-    private $transaction_data;
+    private AbstractGateway $gateway;
 
-    private $gateway;
+    private array $paymentGatewayConfig;
 
-    private $extra_params = ['razorpay_payment_id', 'razorpay_order_id', 'razorpay_signature'];
+    private array $options = [];
 
-    public function __construct($gateway, $paymentGatewayConfig)
+    private array $extra_params = ['razorpay_payment_id', 'razorpay_order_id', 'razorpay_signature'];
+
+    public function __construct(AbstractGateway $gateway, array $paymentGatewayConfig)
     {
         $this->gateway = $gateway;
         $this->paymentGatewayConfig = $paymentGatewayConfig;
-        $this->options = [];
     }
 
-    private function createTransactionData($order_total, $order_email, $event)
+    private function createTransactionData(float $order_total, string $order_email, $event): array
     {
         $this->transaction_data = [
             'amount' => $order_total,
@@ -32,7 +37,7 @@ class Razorpay
         return $this->transaction_data;
     }
 
-    public function startTransaction($order_total, $order_email, $event)
+    public function startTransaction(float $order_total, string $order_email, $event): ResponseInterface
     {
         $this->createTransactionData($order_total, $order_email, $event);
         
@@ -52,12 +57,12 @@ class Razorpay
         return $response;
     }
 
-    public function getTransactionData()
+    public function getTransactionData(): array
     {
         return $this->transaction_data;
     }
 
-    public function extractRequestParameters($request)
+    public function extractRequestParameters($request): void
     {
         foreach ($this->extra_params as $param) {
             if (!empty($request->get($param))) {
@@ -66,13 +71,13 @@ class Razorpay
         }
     }
 
-    public function completeTransaction($data)
+    public function completeTransaction(array $data): ResponseInterface
     {
         // Verify payment signature and capture payment
         $verifyData = [
-            'razorpay_payment_id' => $this->options['razorpay_payment_id'],
-            'razorpay_order_id' => $this->options['razorpay_order_id'],
-            'razorpay_signature' => $this->options['razorpay_signature']
+            'razorpay_payment_id' => $this->options['razorpay_payment_id'] ?? null,
+            'razorpay_order_id' => $this->options['razorpay_order_id'] ?? null,
+            'razorpay_signature' => $this->options['razorpay_signature'] ?? null
         ];
         
         $response = $this->gateway->completePurchase($verifyData)->send();
@@ -80,7 +85,7 @@ class Razorpay
         return $response;
     }
 
-    public function getAdditionalData($response = null)
+    public function getAdditionalData(?ResponseInterface $response = null): array
     {
         $additionalData = [];
         if (isset($this->options['razorpay_payment_id'])) {
@@ -92,12 +97,12 @@ class Razorpay
         return $additionalData;
     }
 
-    public function storeAdditionalData()
+    public function storeAdditionalData(): bool
     {
         return true;
     }
 
-    public function refundTransaction($order, $refund_amount, $refund_application_fee = null)
+    public function refundTransaction($order, float $refund_amount, ?float $refund_application_fee = null): array
     {
         $request = $this->gateway->refund([
             'transactionReference' => $order->transaction_id,
@@ -110,6 +115,7 @@ class Razorpay
 
         $response = $request->send();
 
+        $refundResponse = [];
         if ($response->isSuccessful()) {
             $refundResponse['successful'] = true;
         } else {
