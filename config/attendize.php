@@ -11,6 +11,7 @@ return [
     'payment_gateway_dummy'         => 0,
     'payment_gateway_stripe'        => 1,
     'payment_gateway_paypal'        => 2,
+    'payment_gateway_razorpay'      => 3,
     'fake_card_data'                => [
         'number'      => '4242424242424242',
         'expiryMonth' => '6',
@@ -68,7 +69,7 @@ return [
     'default_datetime_format'       => env('DEFAULT_DATETIME_FORMAT', 'Y-m-d H:i'),
     'default_query_cache'           => 120, #Minutes
     'default_locale'                => 'en',
-    'default_payment_gateway'       => 1, #Stripe=1 Paypal=2
+    'default_payment_gateway'       => 1, #Stripe=1 Paypal=2 Razorpay=3
 
     'cdn_url_user_assets'   => '',
     'cdn_url_static_assets' => '',

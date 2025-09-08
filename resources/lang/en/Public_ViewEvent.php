@@ -79,6 +79,8 @@ return [
     'share_event'                       => 'Share Event',
     'sold_out'                          => 'Sold Out',
     'stripe_credit_or_debit_card'       => 'Credit or debit card',
+    'razorpay_payment_info'             => 'You will be redirected to Razorpay to complete your payment securely.',
+    'pay_with_razorpay'                 => 'Pay with Razorpay',
     'sub_total'                         => 'Sub total',
     'thank_you_for_your_order'          => 'Thank you for your order!',
     'ticket'                            => 'Ticket',

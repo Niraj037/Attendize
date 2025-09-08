@@ -47,3 +47,14 @@ $factory->state(PaymentGateway::class, 'Stripe SCA', [
     'admin_blade_template' => 'ManageAccount.Partials.StripeSCA',
     'checkout_blade_template' => 'Public.ViewEvent.Partials.PaymentStripeSCA'
 ]);
+
+$factory->state(PaymentGateway::class, 'Razorpay', [
+    'provider_name' => 'Razorpay',
+    'provider_url' => 'https://razorpay.com',
+    'is_on_site' => 0,
+    'can_refund' => 1,
+    'name' => 'Razorpay_Checkout',
+    'default' => 0,
+    'admin_blade_template' => 'ManageAccount.Partials.Razorpay',
+    'checkout_blade_template' => 'Public.ViewEvent.Partials.PaymentRazorpay'
+]);

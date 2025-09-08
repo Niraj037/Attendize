@@ -18,7 +18,7 @@ class Factory
     /**
      * @param $name
      * @param $paymentGatewayConfig
-     * @return Dummy|Stripe|StripeSCA
+     * @return Dummy|Stripe|StripeSCA|Razorpay
      * @throws \Exception
      */
     public function create($name, $paymentGatewayConfig)
@@ -51,6 +51,16 @@ class Factory
                     $gateway->initialize($paymentGatewayConfig);
 
                     return new StripeSCA($gateway, $paymentGatewayConfig);
+
+                }
+
+            case Razorpay::GATEWAY_NAME :
+                {
+
+                    $gateway = Omnipay::create($name);
+                    $gateway->initialize($paymentGatewayConfig);
+
+                    return new Razorpay($gateway, $paymentGatewayConfig);
 
                 }
 
